@@ -38,7 +38,7 @@ interface State {
   baseline: SimEntry | null;
   iterations: (SimEntry & { improved?: boolean })[];
   thinking: number | null;
-  done: { improvement_pct: number | null; elapsed_s: number } | null;
+  done: { elapsed_s: number } | null;
   error: string | null;
   source: "live" | "replay" | null;
   dataMode?: string;
@@ -59,7 +59,7 @@ function reduce(s: State, e: AgentEvent): State {
       return { ...s, thinking: null, iterations: [...s.iterations, entry] };
     }
     case "done":
-      return { ...s, thinking: null, done: { improvement_pct: e.improvement_pct, elapsed_s: e.elapsed_s } };
+      return { ...s, thinking: null, done: { elapsed_s: e.elapsed_s } };
     case "error":
       return { ...s, thinking: null, error: e.message };
   }
@@ -133,7 +133,9 @@ export default function AgentLoop({ region, date, presenter }: { region: string;
         plan: best && best !== st.baseline ? best.hourly_mw[h] : null,
       }))
     : [];
-  const pct = (v: number) => (st.baseline ? ((st.baseline.score - v) / Math.abs(st.baseline.score)) * 100 : 0);
+  // Improvement in $ (not %): credits can push the score below zero, which makes a percentage meaningless.
+  const gain = (v: number) => (st.baseline ? st.baseline.score - v : 0);
+  const delta = (v: number) => `${gain(v) >= 0 ? "−" : "+"}${usd(Math.abs(gain(v)))}`;
 
   return (
     <div className="flex flex-col gap-4">
@@ -174,8 +176,13 @@ export default function AgentLoop({ region, date, presenter }: { region: string;
             <div className="flex flex-wrap items-baseline justify-between gap-2">
               <h3 className="text-lg font-semibold">Score per iteration (penalized cost, lower is better)</h3>
               {best && best !== st.baseline && (
-                <span className={`${presenter ? "text-3xl" : "text-2xl"} font-bold tabular`}>
-                  {pct(best.score).toFixed(1)}% better than status quo
+                <span className="flex flex-col items-end">
+                  <span className={`${presenter ? "text-3xl" : "text-2xl"} font-bold tabular`}>{usd(gain(best.score))}/day lower cost than status quo</span>
+                  <span className="secondary text-sm tabular">
+                    in dip window {Math.round(st.baseline.breakdown.window_share * 100)}% → {Math.round(best.breakdown.window_share * 100)}% ·
+                    avg price ${st.baseline.breakdown.avg_price_usd_per_mwh?.toFixed(2)} → ${best.breakdown.avg_price_usd_per_mwh?.toFixed(2)}/MWh ·
+                    curtailed absorbed {Math.round(st.baseline.breakdown.curtailed_mwh_absorbed)} → {Math.round(best.breakdown.curtailed_mwh_absorbed)} MWh
+                  </span>
                 </span>
               )}
             </div>
@@ -215,7 +222,7 @@ export default function AgentLoop({ region, date, presenter }: { region: string;
                   <div className="flex justify-between gap-2 tabular">
                     <b>Iteration {it.iteration}</b>
                     <span>
-                      {usd(it.score)} ({pct(it.score) >= 0 ? "−" : "+"}{Math.abs(pct(it.score)).toFixed(1)}%) {it.improved ? "▲ new best" : ""}
+                      {usd(it.score)} ({delta(it.score)} vs baseline) {it.improved ? "▲ new best" : ""}
                     </span>
                   </div>
                   <div className="secondary">{it.rationale}</div>
@@ -228,7 +235,7 @@ export default function AgentLoop({ region, date, presenter }: { region: string;
               {st.thinking != null && <li className="muted animate-pulse">Iteration {st.thinking}: Claude is proposing a schedule…</li>}
               {st.done && (
                 <li className="font-semibold">
-                  Done{st.done.improvement_pct != null && `: best plan ${st.done.improvement_pct}% better than baseline`} ({st.done.elapsed_s}s)
+                  Done: best plan {usd(gain(best!.score))}/day lower than baseline ({st.done.elapsed_s}s)
                 </li>
               )}
             </ol>

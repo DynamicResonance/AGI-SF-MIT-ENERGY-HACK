@@ -55,7 +55,7 @@ export type AgentEvent =
   | { type: "start"; region: string; date: string; window: [number, number]; max_mw: number; synthetic_jobs: AgentJob[]; grid: Grid; baseline: SimEntry; iterations_planned: number; data_mode: string }
   | { type: "thinking"; iteration: number }
   | ({ type: "iteration"; improved: boolean; best_score: number } & SimEntry)
-  | { type: "done"; best: SimEntry; improvement_pct: number | null; elapsed_s: number; saved: boolean }
+  | { type: "done"; best: SimEntry; improvement_usd?: number; improvement_pct: number | null; elapsed_s: number; saved: boolean }
   | { type: "error"; message: string };
 
 export interface RecordedRun {
@@ -68,6 +68,7 @@ export interface RecordedRun {
   baseline: SimEntry;
   iterations: SimEntry[];
   best: SimEntry;
+  improvement_usd?: number;
   improvement_pct: number | null;
   elapsed_s: number;
   started_at: string;
@@ -127,6 +128,6 @@ export function recordedToEvents(run: RecordedRun): AgentEvent[] {
     best = Math.min(best, it.score);
     evs.push({ type: "iteration", ...it, improved, best_score: best });
   }
-  evs.push({ type: "done", best: run.best, improvement_pct: run.improvement_pct, elapsed_s: run.elapsed_s, saved: true });
+  evs.push({ type: "done", best: run.best, improvement_usd: run.baseline.score - run.best.score, improvement_pct: run.improvement_pct, elapsed_s: run.elapsed_s, saved: true });
   return evs;
 }

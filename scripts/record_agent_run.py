@@ -31,7 +31,7 @@ for rid in args.regions:
             print(f"  it {ev['iteration']}: ${ev['score']:,.0f}  best ${ev['best_score']:,.0f}  "
                   f"missed={ev['breakdown']['deadlines_missed']} over_cap={ev['breakdown']['cap_overflow_mwh']:.1f}  | {ev['rationale'][:110]}", flush=True)
         elif t == "done":
-            print(f"  done: {ev['improvement_pct']}% better than baseline in {ev['elapsed_s']}s", flush=True)
+            print(f"  done: score ${ev['improvement_usd']:,.0f}/day lower than baseline in {ev['elapsed_s']}s", flush=True)
             ok = True
         elif t == "error":
             print(f"  ERROR: {ev['message']}", flush=True)

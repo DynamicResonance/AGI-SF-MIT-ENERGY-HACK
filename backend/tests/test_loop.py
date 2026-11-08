@@ -40,7 +40,9 @@ def test_loop_improves_and_saves(monkeypatch, tmp_path):
     base = events[0]["baseline"]["score"]
     assert its[-1]["best_score"] < base
     saved = json.loads((tmp_path / "CAISO_2026-04-22.json").read_text())
-    assert len(saved["iterations"]) == 4 and saved["improvement_pct"] > 0
+    assert len(saved["iterations"]) == 4 and saved["improvement_usd"] > 0
+    # score crosses zero with the credits -> a % would be meaningless, so it is None
+    assert saved["improvement_pct"] is None or saved["best"]["score"] >= 0
     assert len(saved["synthetic_jobs"]) == 50
 
 

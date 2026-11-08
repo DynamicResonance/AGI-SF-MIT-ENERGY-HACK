@@ -67,10 +67,12 @@ def run_loop(region: str, day_str: str, iterations: int = C.DEFAULT_ITERATIONS, 
         yield {"type": "iteration", **entry, "improved": improved, "best_score": best["score"]}
 
     run.update(best=best, finished_at=datetime.now().astimezone().isoformat(), elapsed_s=round(time.time() - t0, 1),
-               improvement_pct=round(100 * (history[0]["score"] - best["score"]) / abs(history[0]["score"]), 1)
-               if history[0]["score"] else None)
+               improvement_usd=round(history[0]["score"] - best["score"], 2),
+               # A % is only meaningful while both scores stay positive (credits can push the score below 0).
+               improvement_pct=round(100 * (history[0]["score"] - best["score"]) / history[0]["score"], 1)
+               if history[0]["score"] > 0 and best["score"] >= 0 else None)
     if save:
         RUNS_DIR.mkdir(exist_ok=True)
         run_path(region, day_str).write_text(json.dumps(run, separators=(",", ":")))
-    yield {"type": "done", "best": best, "improvement_pct": run["improvement_pct"], "elapsed_s": run["elapsed_s"],
+    yield {"type": "done", "best": best, "improvement_usd": run["improvement_usd"], "improvement_pct": run["improvement_pct"], "elapsed_s": run["elapsed_s"],
            "saved": save}
