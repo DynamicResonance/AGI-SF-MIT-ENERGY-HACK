@@ -11,5 +11,5 @@ COPY snapshots ./snapshots
 COPY agent_runs ./agent_runs
 
 EXPOSE 8000
-# Railway injects $PORT; default 8000 locally.
-CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+# Railway injects $PORT; default 8000 locally. "::" = dual-stack (Railway private network uses IPv6).
+CMD ["sh", "-c", "uvicorn app.main:app --host :: --port ${PORT:-8000}"]
