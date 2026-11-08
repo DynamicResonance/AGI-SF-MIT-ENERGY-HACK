@@ -101,7 +101,8 @@ backend/
 frontend/
   lib/assumptions.ts    ALL default assumptions, each with source/rationale
   lib/calc.ts           pure calculation module (+ calc.test.ts, hand-checked example)
-  components/           DuckChart, BigNumbers, AssumptionsDrawer, HowWeCalculate, AgentLoop
+  components/           GridMap, DuckChart, BigNumbers, AssumptionsDrawer, HowWeCalculate, AgentLoop
+  lib/us-map.json       state paths + approximate ISO footprints (scripts/build-us-map.mjs, from us-atlas)
   app/api/[...path]     streaming proxy to the backend
 scripts/                dataset discovery, default-day selection, snapshots, prewarm, record agent runs
 ```

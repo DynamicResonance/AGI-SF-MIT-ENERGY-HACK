@@ -42,7 +42,7 @@ def _da(dataset: str, col: str, loc: str) -> Source:
 REGIONS: dict[str, Region] = {
     "CAISO": Region(
         id="CAISO",
-        label="CAISO – system-wide",
+        label="CAISO (West – California) · system-wide",
         tz="America/Los_Angeles",
         load=Source("caiso_load", ("load",)),
         solar=Source("caiso_fuel_mix", ("solar",)),
@@ -59,7 +59,7 @@ REGIONS: dict[str, Region] = {
     ),
     "ERCOT": Region(
         id="ERCOT",
-        label="ERCOT",
+        label="ERCOT (Texas)",
         tz="America/Chicago",
         load=Source("ercot_load", ("load",)),
         solar=Source("ercot_fuel_mix", ("solar",)),
@@ -73,7 +73,7 @@ REGIONS: dict[str, Region] = {
     ),
     "PJM": Region(
         id="PJM",
-        label="PJM",
+        label="PJM (Mid-Atlantic)",
         tz="America/New_York",
         load=Source("pjm_load", ("load",)),
         solar=Source("pjm_fuel_mix_hourly", ("solar",), resample=False),
@@ -87,7 +87,7 @@ REGIONS: dict[str, Region] = {
     ),
     "MISO": Region(
         id="MISO",
-        label="MISO",
+        label="MISO (Midwest)",
         tz="America/Chicago",
         load=Source("miso_load", ("load",)),
         solar=Source("miso_fuel_mix", ("solar",)),
@@ -100,7 +100,7 @@ REGIONS: dict[str, Region] = {
     ),
     "SPP": Region(
         id="SPP",
-        label="SPP",
+        label="SPP (Great Plains)",
         tz="America/Chicago",
         load=Source("spp_load", ("load",)),
         solar=Source("spp_fuel_mix", ("solar",)),
@@ -118,7 +118,7 @@ REGIONS: dict[str, Region] = {
     ),
     "NYISO": Region(
         id="NYISO",
-        label="NYISO",
+        label="NYISO (New York)",
         tz="America/New_York",
         load=Source("nyiso_load", ("load",)),
         solar=None,
@@ -133,7 +133,7 @@ REGIONS: dict[str, Region] = {
     ),
     "ISONE": Region(
         id="ISONE",
-        label="ISO-NE",
+        label="ISO-NE (New England)",
         tz="America/New_York",
         load=Source("isone_load", ("load",)),
         solar=Source("isone_fuel_mix", ("solar",)),

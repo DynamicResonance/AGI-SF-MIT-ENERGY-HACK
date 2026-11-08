@@ -17,6 +17,9 @@
   --series-curt: #1baf7a;
   --series-lmp: #eb6834;
   --window-fill: rgba(42, 120, 214, 0.1);
+  --iso-fill: #cfdcef;
+  --iso-hover: rgba(42, 120, 214, 0.25);
+  --iso-edge: #5b6f8f;
   --accent: #2a78d6;
   --warn: #fab219;
 }
@@ -37,6 +40,9 @@
     --series-curt: #199e70;
     --series-lmp: #d95926;
     --window-fill: rgba(57, 135, 229, 0.16);
+    --iso-fill: #2c3d57;
+    --iso-hover: rgba(57, 135, 229, 0.35);
+    --iso-edge: #8ea3c4;
     --accent: #3987e5;
   }
 }
@@ -56,6 +62,9 @@
   --series-curt: #199e70;
   --series-lmp: #d95926;
   --window-fill: rgba(57, 135, 229, 0.16);
+  --iso-fill: #2c3d57;
+  --iso-hover: rgba(57, 135, 229, 0.35);
+  --iso-edge: #8ea3c4;
   --accent: #3987e5;
 }
 

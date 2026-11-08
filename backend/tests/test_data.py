@@ -109,7 +109,7 @@ def test_api_endpoints(monkeypatch):
     c = TestClient(app)
     regs = c.get("/api/regions").json()["regions"]
     assert [r["id"] for r in regs][:2] == ["CAISO", "ERCOT"]
-    assert regs[0]["label"] == "CAISO – system-wide"
+    assert regs[0]["label"] == "CAISO (West – California) · system-wide"
     assert all(r["default_date"] for r in regs)
     day = c.get("/api/day", params={"region": "CAISO", "date": "2026-04-22"}).json()
     assert len(day["day"]["net"]) == 24

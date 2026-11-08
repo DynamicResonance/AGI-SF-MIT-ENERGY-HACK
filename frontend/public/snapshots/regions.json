@@ -2,7 +2,7 @@
  "regions": [
   {
    "id": "CAISO",
-   "label": "CAISO – system-wide",
+   "label": "CAISO (West – California) · system-wide",
    "tz": "America/Los_Angeles",
    "default_date": "2026-04-22",
    "default_date_reason": "Weekday with the highest CAISO curtailment in Mar–May 2026 (98.5 GWh; #2 overall after Sun 2026-05-17).",
@@ -17,7 +17,7 @@
   },
   {
    "id": "ERCOT",
-   "label": "ERCOT",
+   "label": "ERCOT (Texas)",
    "tz": "America/Chicago",
    "default_date": "2026-03-18",
    "default_date_reason": "Weekday with the deepest midday net-load dip in Mar–May 2026 (min = 19.8% of evening peak).",
@@ -32,7 +32,7 @@
   },
   {
    "id": "PJM",
-   "label": "PJM",
+   "label": "PJM (Mid-Atlantic)",
    "tz": "America/New_York",
    "default_date": "2026-05-18",
    "default_date_reason": "Weekday with the deepest midday net-load dip in Mar–May 2026 (min = 63.7% of evening peak — a shallow dip).",
@@ -47,7 +47,7 @@
   },
   {
    "id": "MISO",
-   "label": "MISO",
+   "label": "MISO (Midwest)",
    "tz": "America/Chicago",
    "default_date": "2026-03-13",
    "default_date_reason": "Weekday with the deepest midday net-load dip in Mar–May 2026, excl. Memorial Day (min = 60.2% of evening peak — shallow).",
@@ -60,7 +60,7 @@
   },
   {
    "id": "SPP",
-   "label": "SPP",
+   "label": "SPP (Great Plains)",
    "tz": "America/Chicago",
    "default_date": "2026-03-11",
    "default_date_reason": "Weekday with the highest SPP VER curtailment in Mar–May 2026 (204 GWh, mostly wind).",
@@ -75,7 +75,7 @@
   },
   {
    "id": "NYISO",
-   "label": "NYISO",
+   "label": "NYISO (New York)",
    "tz": "America/New_York",
    "default_date": "2026-05-18",
    "default_date_reason": "Weekday with the deepest midday net-load dip in Mar–May 2026 (min = 65.9% of evening peak — shallow).",
@@ -90,7 +90,7 @@
   },
   {
    "id": "ISONE",
-   "label": "ISO-NE",
+   "label": "ISO-NE (New England)",
    "tz": "America/New_York",
    "default_date": "2026-04-09",
    "default_date_reason": "Weekday with the deepest midday net-load dip in Mar–May 2026 (min = 40.0% of evening peak).",

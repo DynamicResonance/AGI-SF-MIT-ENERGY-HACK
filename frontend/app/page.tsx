@@ -5,6 +5,7 @@ import BigNumbers from "@/components/BigNumbers";
 import AssumptionsDrawer from "@/components/AssumptionsDrawer";
 import HowWeCalculate from "@/components/HowWeCalculate";
 import AgentLoop from "@/components/AgentLoop";
+import GridMap from "@/components/GridMap";
 import { ANNUALIZE_DAY_OPTIONS, Assumptions, DEFAULT_ANNUALIZE_DAYS, DEFAULT_ASSUMPTIONS } from "@/lib/assumptions";
 import { annualize, computeDay, type Window } from "@/lib/calc";
 import { fetchDays, fetchRegions } from "@/lib/api";
@@ -129,6 +130,8 @@ export default function Page() {
           </button>
         </div>
       </header>
+
+      {regions.length > 0 && <GridMap regions={regions} selected={regionId} onSelect={changeRegion} presenter={presenter} />}
 
       <nav className="flex gap-2" role="tablist">
         {([["calc", "Calculator"], ["agent", "Agent loop"]] as const).map(([id, label]) => (
