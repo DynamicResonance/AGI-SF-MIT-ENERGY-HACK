@@ -62,6 +62,25 @@ All series are normalized to **hourly averages in local time** (MW averaged over
 - Proposer: `claude-opus-5-5`, structured output (Pydantic schema), effort `medium`, server-side refusal fallback on. Each iteration
   gets the full job list, the hourly grid table, the score history, the best and previous plans, and the previous plan's violations.
 
+### Recorded runs (real Claude proposer, `claude-opus-5-5`, effort medium, 8 iterations)
+
+Replayable offline from `backend/agent_runs/` (and `frontend/public/agent_runs/`). Improvement is reported in **$/day**, not %:
+the window/curtailment credits push the score below zero, so a percentage of the baseline is meaningless.
+
+| Run | Baseline score | Best score (iteration) | $/day lower | MWh in dip window | Avg price paid | Curtailed MWh absorbed |
+|---|---|---|---|---|---|---|
+| CAISO 2026-04-22 | $7,573 | −$52,814 (it 3) | $60,387 | 25% → 100% | $16.17 → −$1.23/MWh | 773 → 1,691 |
+| ERCOT 2026-03-18 | $26,376 | −$4,277 (it 8) | $30,652 | 19% → 99% | $17.49 → $7.41/MWh | n/a (not published) |
+
+- Both runs end with **0 missed deadlines and 0 MWh over the site cap**.
+- ERCOT iteration 3 is the best "learns from feedback" moment: the plan came back without start hours for the jobs, so the
+  verifier counted all 50 as invalid/missed (score $1.28M). Iteration 4's rationale says it rebuilt a valid plan "with every
+  job given a start hour" from the best schedule, and iterations 5–8 kept improving it.
+- The CAISO run converges by iteration 3, after which Claude re-submits the best plan (it says so in its rationale).
+  The big jump happens in iteration 1 (moving work out of the night); later iterations are fine-tuning near the cap.
+- The objective is energy plus policy credits. Energy cost alone: CAISO $27,346 → −$2,085 (negative prices pay the site);
+  ERCOT $29,580 → $12,533 (−58%).
+
 ## Chart choice
 
 LMP is drawn in an **aligned panel under the duck chart** rather than on a secondary y-axis. Two scales on one plot invite false

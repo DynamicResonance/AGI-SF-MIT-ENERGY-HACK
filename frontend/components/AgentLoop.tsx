@@ -136,6 +136,13 @@ export default function AgentLoop({ region, date, presenter }: { region: string;
   // Improvement in $ (not %): credits can push the score below zero, which makes a percentage meaningless.
   const gain = (v: number) => (st.baseline ? st.baseline.score - v : 0);
   const delta = (v: number) => `${gain(v) >= 0 ? "−" : "+"}${usd(Math.abs(gain(v)))}`;
+  // Keep the y-axis readable: an invalid plan (e.g. $1M of deadline penalties) is pinned to the
+  // top edge as a hollow red "off-scale" marker instead of flattening every other point.
+  const lo = Math.min(0, ...scoreData.map((d) => d.best));
+  const hi = st.baseline ? st.baseline.score : 0;
+  const yTop = hi + Math.max(0.35 * (hi - lo), 1000);
+  const yBottom = lo - 0.08 * (hi - lo);
+  const plotData = scoreData.map((d) => ({ ...d, plot: Math.min(d.score, yTop), off: d.score > yTop }));
 
   return (
     <div className="flex flex-col gap-4">
@@ -180,8 +187,8 @@ export default function AgentLoop({ region, date, presenter }: { region: string;
                   <span className={`${presenter ? "text-3xl" : "text-2xl"} font-bold tabular`}>{usd(gain(best.score))}/day lower cost than status quo</span>
                   <span className="secondary text-sm tabular">
                     in dip window {Math.round(st.baseline.breakdown.window_share * 100)}% → {Math.round(best.breakdown.window_share * 100)}% ·
-                    avg price ${st.baseline.breakdown.avg_price_usd_per_mwh?.toFixed(2)} → ${best.breakdown.avg_price_usd_per_mwh?.toFixed(2)}/MWh ·
-                    curtailed absorbed {Math.round(st.baseline.breakdown.curtailed_mwh_absorbed)} → {Math.round(best.breakdown.curtailed_mwh_absorbed)} MWh
+                    avg price ${st.baseline.breakdown.avg_price_usd_per_mwh?.toFixed(2)} → ${best.breakdown.avg_price_usd_per_mwh?.toFixed(2)}/MWh
+                    {st.grid?.curtailment && ` · curtailed absorbed ${Math.round(st.baseline.breakdown.curtailed_mwh_absorbed)} → ${Math.round(best.breakdown.curtailed_mwh_absorbed)} MWh`}
                   </span>
                 </span>
               )}
@@ -193,15 +200,24 @@ export default function AgentLoop({ region, date, presenter }: { region: string;
             </div>
             <div style={{ height: presenter ? 360 : 280 }}>
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={scoreData} margin={{ top: 10, right: 16, bottom: 0, left: 10 }}>
+                <LineChart data={plotData} margin={{ top: 10, right: 16, bottom: 0, left: 10 }}>
                   <CartesianGrid stroke="var(--grid)" vertical={false} />
                   <XAxis dataKey="i" type="number" domain={[0, Math.max(st.iterations.length, iters)]} allowDecimals={false} tick={axisTick} stroke="var(--border)"
                     label={{ value: "iteration", position: "insideBottomRight", offset: -2, fill: "var(--text-muted)", fontSize: 12 }} />
-                  <YAxis tick={axisTick} stroke="var(--border)" width={70} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} domain={["auto", "auto"]} />
+                  <YAxis tick={axisTick} stroke="var(--border)" width={70} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} domain={[yBottom, yTop]} allowDataOverflow />
                   <ReferenceLine y={st.baseline.score} stroke="var(--series-load)" strokeDasharray="5 4" />
                   <Line dataKey="best" type="stepAfter" stroke="var(--series-curt)" strokeWidth={2} dot={false} isAnimationActive={false} />
-                  <Line dataKey="score" stroke="var(--series-net)" strokeWidth={3} dot={{ r: 5, stroke: "var(--surface-1)", strokeWidth: 2, fill: "var(--series-net)" }} isAnimationActive={false} />
-                  <Tooltip formatter={(v: number, n: string) => [usd(v), n === "best" ? "best so far" : "score"]} labelFormatter={(l) => (l === 0 ? "baseline" : `iteration ${l}`)}
+                  <Line dataKey="plot" stroke="var(--series-net)" strokeWidth={3} isAnimationActive={false}
+                    dot={(p: { cx?: number; cy?: number; index?: number; payload?: { off: boolean } }) =>
+                      p.payload?.off ? (
+                        <g key={`d${p.index}`}>
+                          <circle cx={p.cx} cy={p.cy} r={7} fill="var(--surface-1)" stroke="#d03b3b" strokeWidth={2} />
+                          <text x={p.cx} y={(p.cy ?? 0) + 22} textAnchor="middle" fontSize={11} fill="#d03b3b">off-scale</text>
+                        </g>
+                      ) : (
+                        <circle key={`d${p.index}`} cx={p.cx} cy={p.cy} r={5} fill="var(--series-net)" stroke="var(--surface-1)" strokeWidth={2} />
+                      )} />
+                  <Tooltip formatter={(v: number, n: string, item: { payload?: { score: number } }) => [usd(n === "plot" ? item.payload?.score ?? v : v), n === "best" ? "best so far" : "score"]} labelFormatter={(l) => (l === 0 ? "baseline" : `iteration ${l}`)}
                     contentStyle={{ background: "var(--surface-1)", border: "1px solid var(--border)" }} />
                 </LineChart>
               </ResponsiveContainer>
