@@ -1,0 +1,9 @@
+.env
+__pycache__/
+*.pyc
+.pytest_cache/
+backend/cache/
+frontend/node_modules/
+frontend/.next/
+frontend/next-env.d.ts
+scripts/datasets_all.json

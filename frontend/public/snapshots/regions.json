@@ -1,0 +1,107 @@
+{
+ "regions": [
+  {
+   "id": "CAISO",
+   "label": "CAISO – system-wide",
+   "tz": "America/Los_Angeles",
+   "default_date": "2026-04-22",
+   "default_date_reason": "Weekday with the highest CAISO curtailment in Mar–May 2026 (98.5 GWh; #2 overall after Sun 2026-05-17).",
+   "today": "2026-11-08",
+   "has_curtailment": true,
+   "has_lmp": true,
+   "has_solar": true,
+   "lmp_label": "Day-ahead LMP, NP15 trading hub",
+   "notes": [
+    "System-wide CAISO balancing area. PG&E-only net load is not available: GridStatus publishes PG&E-TAC load but solar, wind and curtailment only system-wide."
+   ]
+  },
+  {
+   "id": "ERCOT",
+   "label": "ERCOT",
+   "tz": "America/Chicago",
+   "default_date": "2026-03-18",
+   "default_date_reason": "Weekday with the deepest midday net-load dip in Mar–May 2026 (min = 19.8% of evening peak).",
+   "today": "2026-11-08",
+   "has_curtailment": false,
+   "has_lmp": true,
+   "has_solar": true,
+   "lmp_label": "Day-ahead settlement point price, Hub Average",
+   "notes": [
+    "ERCOT does not publish renewable curtailment in GridStatus; conservative layer shown as not reported."
+   ]
+  },
+  {
+   "id": "PJM",
+   "label": "PJM",
+   "tz": "America/New_York",
+   "default_date": "2026-05-18",
+   "default_date_reason": "Weekday with the deepest midday net-load dip in Mar–May 2026 (min = 63.7% of evening peak — a shallow dip).",
+   "today": "2026-11-08",
+   "has_curtailment": false,
+   "has_lmp": true,
+   "has_solar": true,
+   "lmp_label": "Day-ahead LMP, Western Hub",
+   "notes": [
+    "Fuel mix excludes behind-the-meter solar (already netted out of metered load)."
+   ]
+  },
+  {
+   "id": "MISO",
+   "label": "MISO",
+   "tz": "America/Chicago",
+   "default_date": "2026-03-13",
+   "default_date_reason": "Weekday with the deepest midday net-load dip in Mar–May 2026, excl. Memorial Day (min = 60.2% of evening peak — shallow).",
+   "today": "2026-11-08",
+   "has_curtailment": false,
+   "has_lmp": true,
+   "has_solar": true,
+   "lmp_label": "Day-ahead LMP, Indiana Hub",
+   "notes": []
+  },
+  {
+   "id": "SPP",
+   "label": "SPP",
+   "tz": "America/Chicago",
+   "default_date": "2026-03-11",
+   "default_date_reason": "Weekday with the highest SPP VER curtailment in Mar–May 2026 (204 GWh, mostly wind).",
+   "today": "2026-11-08",
+   "has_curtailment": true,
+   "has_lmp": true,
+   "has_solar": true,
+   "lmp_label": "Day-ahead LMP, SPP South Hub",
+   "notes": [
+    "Curtailment = SPP VER curtailments (redispatch + manual + curtailed-for-energy, wind + solar), East + West."
+   ]
+  },
+  {
+   "id": "NYISO",
+   "label": "NYISO",
+   "tz": "America/New_York",
+   "default_date": "2026-05-18",
+   "default_date_reason": "Weekday with the deepest midday net-load dip in Mar–May 2026 (min = 65.9% of evening peak — shallow).",
+   "today": "2026-11-08",
+   "has_curtailment": false,
+   "has_lmp": true,
+   "has_solar": false,
+   "lmp_label": "Day-ahead LMP, Zone J (N.Y.C.)",
+   "notes": [
+    "NYISO fuel mix has no separate grid-scale solar column (it's inside 'other renewables'); net load here = load − wind only. Behind-the-meter solar is already netted out of load."
+   ]
+  },
+  {
+   "id": "ISONE",
+   "label": "ISO-NE",
+   "tz": "America/New_York",
+   "default_date": "2026-04-09",
+   "default_date_reason": "Weekday with the deepest midday net-load dip in Mar–May 2026 (min = 40.0% of evening peak).",
+   "today": "2026-11-08",
+   "has_curtailment": false,
+   "has_lmp": true,
+   "has_solar": true,
+   "lmp_label": "Day-ahead LMP, Internal Hub",
+   "notes": [
+    "Fuel-mix solar is grid-connected only; most New England solar is behind the meter."
+   ]
+  }
+ ]
+}

@@ -1,0 +1,22 @@
+services:
+  backend:
+    build: ./backend
+    environment:
+      GRIDSTATUS_API_KEY: ${GRIDSTATUS_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      OFFLINE_MODE: ${OFFLINE_MODE:-0}
+    volumes:
+      - cache:/data/cache
+    ports:
+      - "8000:8000"
+  frontend:
+    build: ./frontend
+    environment:
+      BACKEND_URL: http://backend:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  cache:

@@ -1,0 +1,112 @@
+@import "tailwindcss";
+
+/* Color roles (validated with the dataviz palette validator: light + dark pass). */
+:root {
+  color-scheme: light;
+  --surface-0: #f4f3ef;
+  --surface-1: #fcfcfb;
+  --surface-2: #efeee9;
+  --border: #dddcd5;
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted: #77766f;
+  --grid: #e6e5df;
+  --series-load: #8a8983; /* gross load: neutral context */
+  --series-net: #2a78d6; /* net load: the duck (hero) */
+  --series-solar: #eda100;
+  --series-curt: #1baf7a;
+  --series-lmp: #eb6834;
+  --window-fill: rgba(42, 120, 214, 0.1);
+  --accent: #2a78d6;
+  --warn: #fab219;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --surface-0: #111110;
+    --surface-1: #1a1a19;
+    --surface-2: #252523;
+    --border: #383835;
+    --text-primary: #f0efec;
+    --text-secondary: #c3c2b7;
+    --text-muted: #9a998f;
+    --grid: #2c2c2a;
+    --series-load: #9a998f;
+    --series-net: #3987e5;
+    --series-solar: #c98500;
+    --series-curt: #199e70;
+    --series-lmp: #d95926;
+    --window-fill: rgba(57, 135, 229, 0.16);
+    --accent: #3987e5;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --surface-0: #111110;
+  --surface-1: #1a1a19;
+  --surface-2: #252523;
+  --border: #383835;
+  --text-primary: #f0efec;
+  --text-secondary: #c3c2b7;
+  --text-muted: #9a998f;
+  --grid: #2c2c2a;
+  --series-load: #9a998f;
+  --series-net: #3987e5;
+  --series-solar: #c98500;
+  --series-curt: #199e70;
+  --series-lmp: #d95926;
+  --window-fill: rgba(57, 135, 229, 0.16);
+  --accent: #3987e5;
+}
+
+html,
+body {
+  background: var(--surface-0);
+  color: var(--text-primary);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+.card {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+.muted {
+  color: var(--text-muted);
+}
+.secondary {
+  color: var(--text-secondary);
+}
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+input[type="range"] {
+  accent-color: var(--accent);
+  width: 100%;
+}
+select,
+input[type="date"],
+button.btn {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  color: var(--text-primary);
+}
+button.btn:hover {
+  border-color: var(--accent);
+}
+button.btn[aria-pressed="true"] {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+.badge-assumption {
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 1px 7px;
+  color: var(--text-muted);
+}
