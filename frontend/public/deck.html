@@ -1,0 +1,751 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cron at Noon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #EDF0F5;
+    --ink: #18203A;
+    --muted: #5A6380;
+    --rule: #C9CFDC;
+    --demand: #3557D6;
+    --sun: #F2A300;
+    --sun-fill: rgba(242, 163, 0, 0.30);
+    --chip-bg: #18203A;
+    --chip-ink: #EDF0F5;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #10162B;
+      --ink: #E9EDF6;
+      --muted: #9AA3BE;
+      --rule: #2A3352;
+      --demand: #7F9BFF;
+      --sun: #FFB81C;
+      --sun-fill: rgba(255, 184, 28, 0.26);
+      --chip-bg: #E9EDF6;
+      --chip-ink: #10162B;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10162B;
+    --ink: #E9EDF6;
+    --muted: #9AA3BE;
+    --rule: #2A3352;
+    --demand: #7F9BFF;
+    --sun: #FFB81C;
+    --sun-fill: rgba(255, 184, 28, 0.26);
+    --chip-bg: #E9EDF6;
+    --chip-ink: #10162B;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    font-variation-settings: "wdth" 100;
+  }
+
+  .stage {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 1600px;
+    height: 900px;
+    transform-origin: center;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 96px 112px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s;
+  }
+  .slide.active { opacity: 1; visibility: visible; }
+
+  /* Slide 1: title */
+  .title-arc { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .title-block { position: relative; max-width: 860px; }
+  .title-block h1 {
+    margin: 0;
+    font-size: 132px;
+    line-height: 0.95;
+    font-weight: 850;
+    font-variation-settings: "wdth" 120;
+    letter-spacing: -0.01em;
+  }
+  .title-block p {
+    margin: 36px 0 0;
+    max-width: 620px;
+    font-size: 30px;
+    line-height: 1.35;
+    color: var(--muted);
+  }
+  .authors {
+    position: absolute;
+    left: 112px;
+    bottom: 186px;
+    display: flex;
+    gap: 48px;
+    font-size: 26px;
+    font-weight: 600;
+  }
+  .event {
+    position: absolute;
+    left: 112px;
+    bottom: 144px;
+    font-size: 20px;
+    color: var(--muted);
+  }
+
+  /* Slide 2: problem and opportunity */
+  .po { display: grid; grid-template-columns: 600px 1fr; gap: 72px; height: 100%; }
+  .po-text { display: flex; flex-direction: column; justify-content: center; gap: 56px; }
+  .po-label { display: block; font-size: 20px; font-weight: 600; color: var(--muted); margin-bottom: 12px; }
+  .po-text h2 {
+    margin: 0;
+    font-size: 44px;
+    line-height: 1.1;
+    font-weight: 800;
+    font-variation-settings: "wdth" 108;
+  }
+  .po-text p { margin: 0; font-size: 30px; line-height: 1.35; font-weight: 500; }
+  .po-chart { position: relative; }
+  .po-chart svg { width: 100%; height: 100%; overflow: visible; }
+  .po-foot { position: absolute; left: 0; bottom: 8px; font-size: 15px; line-height: 1.4; color: var(--muted); max-width: 640px; }
+
+  /* Slide 3: duck curve */
+  .caption { position: relative; max-width: 1000px; min-height: 150px; }
+  .caption h2 {
+    margin: 0;
+    font-size: 44px;
+    line-height: 1.08;
+    font-weight: 800;
+    font-variation-settings: "wdth" 108;
+  }
+  .caption p {
+    margin: 14px 0 0;
+    max-width: 900px;
+    font-size: 24px;
+    line-height: 1.4;
+    color: var(--muted);
+  }
+  .caption .swap { transition: opacity 0.35s ease; }
+  .caption.fading .swap { opacity: 0; }
+  .chart { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .chart text { font-family: inherit; }
+  .steps {
+    position: absolute;
+    left: 112px;
+    bottom: 44px;
+    display: flex;
+    gap: 10px;
+  }
+  .steps button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--rule);
+    background: transparent;
+    color: var(--muted);
+    font: 600 17px "Archivo", sans-serif;
+    cursor: pointer;
+  }
+  .steps button[aria-current="step"] {
+    border-color: var(--sun);
+    background: var(--sun);
+    color: #18203A;
+  }
+  .note {
+    position: absolute;
+    right: 112px;
+    top: 104px;
+    font-size: 18px;
+    color: var(--muted);
+    text-align: right;
+    max-width: 300px;
+    line-height: 1.4;
+  }
+
+  /* Slide 3: demo */
+  .demo-head h2 {
+    margin: 0;
+    font-size: 52px;
+    font-weight: 800;
+    font-variation-settings: "wdth" 110;
+  }
+  .demo-head p {
+    margin: 14px 0 0;
+    font-size: 24px;
+    color: var(--muted);
+    max-width: 900px;
+  }
+  .demo-frame {
+    position: absolute;
+    left: 112px;
+    right: 112px;
+    top: 250px;
+    bottom: 110px;
+    border: 2px solid var(--rule);
+    border-radius: 14px;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+  }
+  .demo-frame iframe { width: 100%; height: 100%; border: 0; background: #fff; }
+  .demo-empty { text-align: center; color: var(--muted); }
+  .demo-empty strong { display: block; font-size: 34px; color: var(--ink); margin-bottom: 10px; }
+  .demo-empty span { font-size: 20px; }
+  .demo-link {
+    position: absolute;
+    right: 112px;
+    top: 196px;
+    font-size: 20px;
+    color: var(--demand);
+  }
+
+  /* Simulation results */
+  .sim h2 { margin: 0; font-size: 52px; font-weight: 800; font-variation-settings: "wdth" 110; }
+  .sim .by { margin: 10px 0 0; font-size: 22px; color: var(--muted); }
+  .sim-grid { display: grid; grid-template-columns: 520px 1fr; gap: 96px; margin-top: 64px; align-items: start; }
+  .sim-hero .x { font-size: 220px; line-height: 0.85; font-weight: 850; font-variation-settings: "wdth" 116; letter-spacing: -0.03em; }
+  .sim-hero p { margin: 20px 0 0; font-size: 30px; line-height: 1.3; font-weight: 600; max-width: 480px; }
+  .sim table { width: 100%; border-collapse: collapse; font-size: 26px; }
+  .sim th { text-align: left; font-size: 18px; font-weight: 600; color: var(--muted); padding: 0 0 12px; }
+  .sim td { padding: 16px 0; border-top: 2px solid var(--rule); font-weight: 600; }
+  .sim td.num, .sim th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .sim tr.cheap td { color: var(--ink); }
+  .sim tr.cheap td:first-child { box-shadow: inset 6px 0 0 var(--sun); padding-left: 18px; }
+  .sim tr.dear td { color: var(--muted); }
+  .sim tr.dear td:first-child { padding-left: 18px; }
+  .sim-job { margin-top: 44px; padding: 28px 32px; border: 2px solid var(--rule); border-radius: 14px; }
+  .sim-job .what { font-size: 22px; color: var(--muted); }
+  .sim-job .vals { display: flex; align-items: baseline; gap: 40px; margin-top: 12px; }
+  .sim-job .v { font-size: 54px; font-weight: 800; font-variation-settings: "wdth" 110; font-variant-numeric: tabular-nums; }
+  .sim-job .v.old { color: var(--muted); }
+  .sim-job .v.old s { text-decoration-thickness: 4px; }
+  .sim-job .v small { display: block; font-size: 18px; font-weight: 600; color: var(--muted); text-decoration: none; }
+  .sim-foot { position: absolute; left: 112px; bottom: 52px; max-width: 1000px; font-size: 16px; line-height: 1.5; color: var(--muted); }
+
+  /* Closing slide */
+  .close-grid { display: grid; grid-template-columns: 1fr 620px; gap: 80px; height: 100%; align-items: center; padding-bottom: 40px; }
+  .close h3 { margin: 0 0 18px; font-size: 22px; font-weight: 600; color: var(--muted); }
+  .close ul { list-style: none; margin: 0 0 56px; padding: 0; }
+  .close ul:last-child { margin-bottom: 0; }
+  .close li { display: grid; grid-template-columns: 52px 1fr; align-items: baseline; font-size: 32px; line-height: 1.3; font-weight: 600; padding: 10px 0; }
+  .close li a { color: inherit; text-decoration-color: var(--sun); text-decoration-thickness: 3px; text-underline-offset: 5px; }
+  .mark { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; font-size: 20px; font-weight: 800; transform: translateY(4px); }
+  .mark.done { background: var(--sun); color: #18203A; }
+  .mark.todo { border: 3px solid var(--rule); }
+  .fact { border-left: 4px solid var(--sun); padding-left: 48px; }
+  .fact .big { font-size: 150px; line-height: 0.9; font-weight: 850; font-variation-settings: "wdth" 112; letter-spacing: -0.02em; white-space: nowrap; }
+  .fact .fact-line { margin: 12px 0 0; font-size: 44px; line-height: 1.15; font-weight: 500; color: var(--muted); }
+  .fact .fact-line.strong { color: var(--ink); font-weight: 800; font-variation-settings: "wdth" 108; }
+  .fact .fact-eq { margin: 24px 0 8px; font-size: 96px; line-height: 0.8; font-weight: 800; color: var(--sun); }
+
+  /* Chrome */
+  .chrome {
+    position: absolute;
+    right: 112px;
+    bottom: 44px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 18px;
+    color: var(--muted);
+  }
+  .chrome button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--rule);
+    background: transparent;
+    color: var(--ink);
+    font-size: 18px;
+    cursor: pointer;
+  }
+  button:focus-visible, a:focus-visible { outline: 3px solid var(--sun); outline-offset: 3px; }
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+
+  <!-- 1. Title -->
+  <section class="slide" aria-label="Title">
+    <svg class="title-arc" viewBox="0 0 1600 900" aria-hidden="true">
+      <line x1="0" y1="780" x2="1600" y2="780" style="stroke: var(--rule)" stroke-width="2"/>
+      <path d="M 790 780 A 380 400 0 0 1 1550 780" fill="none" style="stroke: var(--ink)" stroke-width="2" stroke-dasharray="2 10" stroke-linecap="round"/>
+      <circle cx="1170" cy="380" r="46" fill="none" style="stroke: var(--sun)" stroke-width="2" opacity="0.5"/>
+      <circle cx="1170" cy="380" r="28" style="fill: var(--sun)"/>
+      <text x="790" y="816" text-anchor="middle" font-size="18" style="fill: var(--muted)">6 a.m.</text>
+      <text x="1170" y="320" text-anchor="middle" font-size="18" style="fill: var(--muted)">Noon</text>
+      <text x="1550" y="816" text-anchor="middle" font-size="18" style="fill: var(--muted)">6 p.m.</text>
+    </svg>
+    <div class="title-block">
+      <h1>Cron at Noon</h1>
+      <p>Energy for cron jobs: the grid already built the capacity AI’s background work needs. It sits idle every sunny midday.</p>
+    </div>
+    <div class="authors">
+      <span>Aleh Manchuliantsau</span>
+      <span>Thomas Barrios</span>
+    </div>
+    <div class="event">SF × MIT Hack Day: Energy. Track 3, manage loads.</div>
+  </section>
+
+  <!-- 2. Problem and opportunity -->
+  <section class="slide" aria-label="Problem and opportunity">
+    <div class="po">
+      <div class="po-text">
+        <div>
+          <span class="po-label">Problem</span>
+          <h2>Everyone is hunting for energy for real-time compute.</h2>
+        </div>
+        <div>
+          <span class="po-label">Opportunity</span>
+          <h2>Cron jobs run in the background, so they don’t have to run right now.</h2>
+        </div>
+      </div>
+      <div class="po-chart">
+        <svg id="launch-chart" viewBox="0 0 776 708" role="img" aria-label="Always-on agents launched in 2026, cumulative by month: 1 in July, 3 in August, 5 in September, 6 in October."></svg>
+        <!-- Sources (for Q&A): xAI Grok Automations Jul 16 2026, Grok Bot Aug 11 2026; Instinct private beta Aug 2026 (Skift);
+             Meta Muse Sep 8 2026; OpenAI Dots Sep 29 2026; Claude Duet research preview Oct 21 2026. Launch count, not compute volume. -->
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Animated duck curve -->
+  <section class="slide" aria-label="The midday surplus">
+    <div class="caption" id="caption" aria-live="polite">
+      <div class="swap">
+        <h2 id="cap-title"></h2>
+        <p id="cap-body"></p>
+      </div>
+    </div>
+    <div class="note">Illustrative spring day, CAISO-like shape. Live data in the demo.</div>
+
+    <svg class="chart" id="chart" viewBox="0 0 1600 900" aria-hidden="true">
+      <defs>
+        <pattern id="hatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <rect width="12" height="12" style="fill: var(--sun-fill)"/>
+          <line x1="0" y1="0" x2="0" y2="12" style="stroke: var(--sun)" stroke-width="3"/>
+        </pattern>
+      </defs>
+      <g id="axis"></g>
+      <path id="solar" style="fill: var(--sun-fill); stroke: var(--sun)" stroke-width="2"/>
+      <g id="surplus" opacity="0">
+        <path id="surplus-area" fill="url(#hatch)"/>
+        <line id="peak-line" style="stroke: var(--ink)" stroke-width="2" stroke-dasharray="8 8"/>
+        <text id="peak-label" font-size="20" font-weight="600" style="fill: var(--ink)">Capacity built for the evening peak</text>
+        <text id="window-label" font-size="20" font-weight="600" text-anchor="middle" style="fill: var(--ink)">9 a.m. to 2 p.m.: built, paid for, idle</text>
+      </g>
+      <path id="demand" fill="none" style="stroke: var(--demand)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      <path id="net" fill="none" style="stroke: var(--ink)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity="0"/>
+      <g id="legend" font-size="18" style="fill: var(--muted)"></g>
+      <g id="chips"></g>
+    </svg>
+
+    <nav class="steps" id="steps" aria-label="Animation steps"></nav>
+  </section>
+
+  <!-- 3. Demo -->
+  <section class="slide" aria-label="Demo">
+    <div class="demo-head">
+      <h2>Midday surplus to tokens, live</h2>
+      <p>Pick a grid region and a day. The calculator turns real grid data into energy, tokens, and dollars.</p>
+    </div>
+    <a class="demo-link" id="demo-link" target="_blank" rel="noopener" hidden>Open demo in a new tab</a>
+    <div class="demo-frame" id="demo-frame">
+      <div class="demo-empty">
+        <strong>The calculator goes here</strong>
+        <span>Set DEMO_URL at the top of the script in this file.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Simulation results -->
+  <section class="slide sim" aria-label="Simulation results">
+    <h2>Same job, cheaper hour</h2>
+    <p class="by">Simulation by Thomas Barrios on CAISO prices</p>
+    <div class="sim-grid">
+      <div class="sim-hero">
+        <div class="x">4.7×</div>
+        <p>cheaper per token in the cheapest grid interval than in the priciest.</p>
+      </div>
+      <div>
+        <table>
+          <thead><tr><th>CAISO interval</th><th class="num">Grid price</th><th class="num">Per 1M tokens</th></tr></thead>
+          <tbody>
+            <tr class="dear"><td>Priciest</td><td class="num">$55.53 / MWh</td><td class="num">$1.67</td></tr>
+            <tr class="cheap"><td>Cheapest</td><td class="num">$11.73 / MWh</td><td class="num">$0.35</td></tr>
+          </tbody>
+        </table>
+        <div class="sim-job">
+          <div class="what">Example cron job: profile 150 YC companies (3M tokens)</div>
+          <div class="vals">
+            <div class="v old"><s>$5.00</s><small>priciest hour</small></div>
+            <div class="v">$1.06<small>cheapest hour</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="sim-foot">Model: CAISO price × 0.0006 MWh per 1M tokens (placeholder) × 50× inference markup. 33 tests pass; live CAISO OASIS data reproduces both price anchors.</p>
+  </section>
+
+  <!-- 6. What we did -->
+  <section class="slide close" aria-label="What we did">
+    <div class="close-grid">
+      <div class="close-list">
+        <h3>What we did</h3>
+        <ul>
+          <li><span class="mark done" aria-hidden="true">✓</span><span>Found energy available today for the rising demand of cron jobs.</span></li>
+          <li><span class="mark done" aria-hidden="true">✓</span><span>Confirmed it with <a href="https://www.linkedin.com/in/davidsheu/" target="_blank" rel="noopener">David Sheu</a>, R&amp;D Partnerships at PG&amp;E.</span></li>
+          <li><span class="mark done" aria-hidden="true">✓</span><span>Confirmed it applies to other states and Canada.</span></li>
+        </ul>
+        <h3>Not yet</h3>
+        <ul>
+          <li><span class="mark todo" aria-hidden="true"></span><span>Talk to hyperscalers and AI labs.</span></li>
+        </ul>
+      </div>
+      <div class="fact">
+        <div class="big">76 GW</div>
+        <p class="fact-line">exists today</p>
+        <div class="fact-eq" aria-hidden="true">=</div>
+        <p class="fact-line strong">70 large nuclear reactors’ worth.</p>
+        <!-- Source (for Q&A): Duke Nicholas Institute, "Rethinking Load Growth" (Feb 2025): 76 GW of new load fits on the
+             existing US grid if it can curtail 0.25% of the year (~22 h). Reactor equivalence assumes ~1.1 GW per large reactor. -->
+      </div>
+    </div>
+  </section>
+
+  <div class="chrome">
+    <button id="prev" aria-label="Previous">‹</button>
+    <span id="counter">1 / 3</span>
+    <button id="next" aria-label="Next">›</button>
+  </div>
+</div>
+
+<script>
+/* ---------- Config ---------- */
+// Served by the app itself (e.g. http://localhost:3000/deck.html or the deployed URL + /deck.html):
+// embed the app from the same origin. Override with ?demo=https://... ; opened as a local file: empty.
+const DEMO_URL = new URLSearchParams(location.search).get("demo")
+  || (location.protocol.startsWith("http") ? new URL("/", location.href).href : "");
+
+/* ---------- Stage scaling ---------- */
+const stage = document.getElementById("stage");
+function fit() {
+  const s = Math.min(window.innerWidth / 1600, window.innerHeight / 900);
+  stage.style.transform = `translate(-50%, -50%) scale(${s})`;
+}
+window.addEventListener("resize", fit);
+fit();
+
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------- Illustrative data (GW) ---------- */
+// Gross demand, hourly 0..24. Replace with real CAISO data later if wanted.
+const GROSS = [22, 21, 20.5, 20.3, 20.5, 21.5, 23, 24.5, 25, 24.3, 23.6, 23.2, 23, 23.1, 23.4, 24, 25, 26.5, 28, 29, 28.5, 27, 25, 23.5, 22];
+const SOLAR_PEAK = 16;
+
+function catmull(arr, h) {
+  const i = Math.min(Math.floor(h), arr.length - 2);
+  const t = h - i;
+  const p0 = arr[Math.max(0, i - 1)], p1 = arr[i], p2 = arr[i + 1], p3 = arr[Math.min(arr.length - 1, i + 2)];
+  return 0.5 * (2 * p1 + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t + (-p0 + 3 * p1 - 3 * p2 + p3) * t * t * t);
+}
+const gross = h => catmull(GROSS, h);
+const solar = h => { const s = Math.sin(Math.PI * (h - 6.5) / 12.5); return s > 0 ? SOLAR_PEAK * Math.pow(s, 1.3) : 0; };
+const netFull = h => gross(h) - solar(h);
+
+const HS = Array.from({ length: 241 }, (_, i) => i / 10);
+const PEAK = Math.max(...HS.map(netFull));
+
+/* ---------- Scales ---------- */
+const X0 = 150, X1 = 1490, YT = 330, YB = 760, YMAX = 32;
+const x = h => X0 + (h / 24) * (X1 - X0);
+const y = v => YB - (v / YMAX) * (YB - YT);
+const pt = (h, v) => `${x(h).toFixed(1)} ${y(v).toFixed(1)}`;
+const line = f => HS.map((h, i) => (i ? "L" : "M") + pt(h, f(h))).join(" ");
+
+const svgNS = "http://www.w3.org/2000/svg";
+function el(tag, attrs, parent, text) {
+  const n = document.createElementNS(svgNS, tag);
+  for (const k in attrs) n.setAttribute(k, attrs[k]);
+  if (text) n.textContent = text;
+  parent.appendChild(n);
+  return n;
+}
+
+/* Axis */
+const axis = document.getElementById("axis");
+el("line", { x1: X0, y1: YB, x2: X1, y2: YB, style: "stroke: var(--rule)", "stroke-width": 2 }, axis);
+const ticks = [[0, "12 a.m."], [3, "3 a.m."], [6, "6 a.m."], [9, "9 a.m."], [12, "Noon"], [15, "3 p.m."], [18, "6 p.m."], [21, "9 p.m."], [24, "12 a.m."]];
+ticks.forEach(([h, label]) => {
+  el("line", { x1: x(h), y1: YB, x2: x(h), y2: YB + 10, style: "stroke: var(--rule)", "stroke-width": 2 }, axis);
+  el("text", { x: x(h), y: YB + 36, "text-anchor": "middle", "font-size": 18, style: "fill: var(--muted)" }, axis, label);
+});
+
+/* Legend */
+const legend = document.getElementById("legend");
+(function buildLegend() {
+  const items = [
+    { label: "Demand", draw: g => el("line", { x1: 0, y1: 0, x2: 28, y2: 0, style: "stroke: var(--demand)", "stroke-width": 4 }, g) },
+    { label: "Solar", draw: g => el("rect", { x: 0, y: -9, width: 28, height: 18, style: "fill: var(--sun-fill); stroke: var(--sun)", "stroke-width": 2 }, g) },
+    { label: "Net load: what other plants must supply", draw: g => el("line", { x1: 0, y1: 0, x2: 28, y2: 0, style: "stroke: var(--ink)", "stroke-width": 6 }, g) }
+  ];
+  let lx = 540;
+  items.forEach(it => {
+    const g = el("g", { transform: `translate(${lx}, ${YB + 82})` }, legend);
+    it.draw(g);
+    el("text", { x: 40, y: 6 }, g, it.label);
+    lx += 40 + it.label.length * 9.4 + 40;
+  });
+})();
+
+/* Static paths */
+const demandPath = document.getElementById("demand");
+demandPath.setAttribute("d", line(gross));
+const demandLen = demandPath.getTotalLength();
+demandPath.style.strokeDasharray = demandLen;
+
+const solarPath = document.getElementById("solar");
+const netPath = document.getElementById("net");
+const surplus = document.getElementById("surplus");
+
+(function buildSurplus() {
+  const fwd = [];
+  for (let h = 9; h <= 14.0001; h += 0.1) fwd.push([h, netFull(h)]);
+  const d = `M ${pt(9, PEAK)} L ${pt(14, PEAK)} ` + fwd.reverse().map(([h, v]) => "L" + pt(h, v)).join(" ") + " Z";
+  document.getElementById("surplus-area").setAttribute("d", d);
+  const pl = document.getElementById("peak-line");
+  pl.setAttribute("x1", X0); pl.setAttribute("x2", X1);
+  pl.setAttribute("y1", y(PEAK)); pl.setAttribute("y2", y(PEAK));
+  const lab = document.getElementById("peak-label");
+  lab.setAttribute("x", X0); lab.setAttribute("y", y(PEAK) - 14);
+  const wl = document.getElementById("window-label");
+  wl.setAttribute("x", x(11.5)); wl.setAttribute("y", y(PEAK) - 14);
+})();
+
+/* Chips: deferred agent jobs */
+const CHIP_LABELS = ["Overnight research", "Inbox digest", "Code review", "Deep reasoning pass"];
+const CHIP_W = 230, CHIP_H = 42;
+const chipLayer = document.getElementById("chips");
+const chips = CHIP_LABELS.map((label, i) => {
+  const g = el("g", { opacity: 0 }, chipLayer);
+  el("rect", { x: -CHIP_W / 2, y: -CHIP_H / 2, width: CHIP_W, height: CHIP_H, rx: 22, style: "fill: var(--chip-bg)" }, g);
+  el("text", { x: 0, y: 7, "text-anchor": "middle", "font-size": 19, "font-weight": 600, style: "fill: var(--chip-ink)" }, g, label);
+  const endV = 27.3 - i * 3.7;
+  return {
+    g,
+    from: { x: x(21.6), y: y(30.5 - i * 3.7) },
+    to: { x: x(11.5), y: y(endV) }
+  };
+});
+
+/* ---------- Animation state ---------- */
+const P = { demand: 0, solar: 0, net: 0, surplus: 0, chips: 0 };
+const clamp = v => Math.max(0, Math.min(1, v));
+const ease = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+function render() {
+  demandPath.style.strokeDashoffset = demandLen * (1 - P.demand);
+  const s = P.solar;
+  solarPath.setAttribute("d", `M ${pt(0, 0)} ` + HS.map(h => "L" + pt(h, solar(h) * s)).join(" ") + ` L ${pt(24, 0)} Z`);
+  solarPath.style.opacity = s > 0 ? 1 : 0;
+  netPath.setAttribute("d", line(h => gross(h) - solar(h) * P.net));
+  netPath.setAttribute("opacity", clamp(P.net * 3));
+  surplus.setAttribute("opacity", P.surplus);
+  chips.forEach((c, i) => {
+    const t = ease(clamp((P.chips - i * 0.12) / 0.64));
+    const cx = c.from.x + (c.to.x - c.from.x) * t;
+    const cy = c.from.y + (c.to.y - c.from.y) * t;
+    c.g.setAttribute("transform", `translate(${cx.toFixed(1)}, ${cy.toFixed(1)})`);
+    c.g.setAttribute("opacity", clamp(t * 4));
+  });
+}
+
+let raf = null;
+function tweenTo(target, dur) {
+  if (raf) cancelAnimationFrame(raf);
+  if (reduceMotion || dur === 0) { Object.assign(P, target); render(); return; }
+  const start = { ...P };
+  const t0 = performance.now();
+  const tick = now => {
+    const k = clamp((now - t0) / dur);
+    const e = ease(k);
+    for (const key in target) P[key] = start[key] + (target[key] - start[key]) * e;
+    render();
+    if (k < 1) raf = requestAnimationFrame(tick); else raf = null;
+  };
+  raf = requestAnimationFrame(tick);
+}
+
+/* ---------- Steps ---------- */
+const STEPS = [
+  { title: "Demand dips after the morning rush.", body: "Showers and commutes peak before 9 a.m. Cooking and screens peak after 5 p.m." },
+  { title: "Then solar floods the grid.", body: "California’s panels produce the most right when demand is lowest." },
+  { title: "The rest of the grid goes quiet.", body: "Net load, what other power plants must supply, sinks into the duck’s belly." },
+  { title: "Capacity built for the evening peak sits idle at midday.", body: "Plants and wires are sized for 7 p.m. From 9 to 2 they have room to spare, and surplus solar is often curtailed." },
+  { title: "Agents can do their heavy thinking here.", body: "Background agent work moves into the surplus window: same answers, cheaper energy, nothing new to build." }
+];
+const stepsNav = document.getElementById("steps");
+const stepButtons = STEPS.map((_, i) => {
+  const b = document.createElement("button");
+  b.textContent = i + 1;
+  b.setAttribute("aria-label", `Step ${i + 1}`);
+  b.addEventListener("click", () => { stopAuto(); setStep(i + 1); });
+  stepsNav.appendChild(b);
+  return b;
+});
+
+const caption = document.getElementById("caption");
+let step = 0;
+function setStep(n, instant) {
+  step = Math.max(0, Math.min(STEPS.length, n));
+  const target = {
+    demand: step >= 1 ? 1 : 0,
+    solar: step >= 2 ? 1 : 0,
+    net: step >= 3 ? 1 : 0,
+    surplus: step >= 4 ? 1 : 0,
+    chips: step >= 5 ? 1 : 0
+  };
+  tweenTo(target, instant ? 0 : (step === 5 ? 2000 : 1600));
+  stepButtons.forEach((b, i) => {
+    if (i + 1 === step) b.setAttribute("aria-current", "step");
+    else b.removeAttribute("aria-current");
+  });
+  const s = STEPS[Math.max(0, step - 1)];
+  caption.classList.add("fading");
+  setTimeout(() => {
+    document.getElementById("cap-title").textContent = step ? s.title : "";
+    document.getElementById("cap-body").textContent = step ? s.body : "";
+    caption.classList.remove("fading");
+  }, instant || reduceMotion ? 0 : 300);
+}
+
+let timers = [];
+function stopAuto() { timers.forEach(clearTimeout); timers = []; }
+function autoplay() {
+  stopAuto();
+  setStep(0, true);
+  if (reduceMotion) { setStep(STEPS.length, true); return; }
+  STEPS.forEach((_, i) => timers.push(setTimeout(() => setStep(i + 1), 400 + i * 3200)));
+}
+
+/* ---------- Launch chart ---------- */
+(function launchChart() {
+  const svg = document.getElementById("launch-chart");
+  const months = [
+    { m: "Jul", add: ["Grok Automations"] },
+    { m: "Aug", add: ["Grok Bot", "Instinct"] },
+    { m: "Sep", add: ["Muse", "Dots"] },
+    { m: "Oct", add: ["Claude Duet"] }
+  ];
+  const BW = 150, GAP = 44, X0 = 40, BASE = 560, BH = 66, BG = 5;
+  el("text", { x: 0, y: 24, "font-size": 22, "font-weight": 700, style: "fill: var(--ink)" }, svg, "Always-on agents shipped in 2026");
+  el("text", { x: 0, y: 52, "font-size": 17, style: "fill: var(--muted)" }, svg, "Cumulative launches by month");
+  el("line", { x1: 0, y1: BASE, x2: 776, y2: BASE, style: "stroke: var(--rule)", "stroke-width": 2 }, svg);
+  let all = [];
+  const trend = [];
+  months.forEach((mo, i) => {
+    const bx = X0 + i * (BW + GAP);
+    all = all.concat(mo.add.map(n => ({ n, isNew: true })));
+    all.forEach((item, k) => {
+      const fresh = mo.add.includes(item.n);
+      const by = BASE - (k + 1) * (BH + BG) + BG;
+      el("rect", { x: bx, y: by, width: BW, height: BH, rx: 10, style: fresh ? "fill: var(--sun)" : "fill: var(--chip-bg)" }, svg);
+      el("text", { x: bx + BW / 2, y: by + BH / 2 + 6, "text-anchor": "middle", "font-size": 16, "font-weight": 600, style: fresh ? "fill: #18203A" : "fill: var(--chip-ink)" }, svg, item.n);
+    });
+    const top = BASE - all.length * (BH + BG) + BG;
+    el("text", { x: bx + BW / 2, y: top - 14, "text-anchor": "middle", "font-size": 24, "font-weight": 800, style: "fill: var(--ink)" }, svg, String(all.length));
+    trend.push([bx + BW / 2, top - 56]);
+    el("text", { x: bx + BW / 2, y: BASE + 30, "text-anchor": "middle", "font-size": 18, style: "fill: var(--muted)" }, svg, mo.m);
+  });
+  const defs = el("defs", {}, svg);
+  const mk = el("marker", { id: "trend-head", viewBox: "0 0 10 10", refX: 5, refY: 5, markerWidth: 4, markerHeight: 4, orient: "auto-start-reverse" }, defs);
+  el("path", { d: "M0 0 L10 5 L0 10 Z", style: "fill: var(--sun)" }, mk);
+  const last = trend[trend.length - 1];
+  trend.push([last[0] + 58, last[1] - 44]);
+  el("polyline", { points: trend.map(p => p.join(",")).join(" "), fill: "none", style: "stroke: var(--sun)", "stroke-width": 6, "stroke-linecap": "round", "stroke-linejoin": "round", "marker-end": "url(#trend-head)" }, svg);
+})();
+
+/* ---------- Slides ---------- */
+const slides = [...document.querySelectorAll(".slide")];
+const counter = document.getElementById("counter");
+const CURVE = 2, DEMO = 3;
+let current = -1;
+
+function setSlide(i) {
+  i = Math.max(0, Math.min(slides.length - 1, i));
+  if (i === current) return;
+  slides.forEach((s, k) => s.classList.toggle("active", k === i));
+  current = i;
+  counter.textContent = `${i + 1} / ${slides.length}`;
+  history.replaceState(null, "", `#slide-${i + 1}`);
+  if (i === CURVE) autoplay(); else stopAuto();
+  if (i === DEMO) loadDemo();
+}
+
+function next() {
+  if (current === CURVE && step < STEPS.length) { stopAuto(); setStep(step + 1); return; }
+  setSlide(current + 1);
+}
+function prev() {
+  if (current === CURVE && step > 1) { stopAuto(); setStep(step - 1); return; }
+  setSlide(current - 1);
+}
+
+document.getElementById("next").addEventListener("click", next);
+document.getElementById("prev").addEventListener("click", prev);
+document.addEventListener("keydown", e => {
+  if (["ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); next(); }
+  else if (["ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); prev(); }
+  else if (e.key === "r" || e.key === "R") { if (current === CURVE) autoplay(); }
+  else if (e.key === "f" || e.key === "F") {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+    else document.exitFullscreen?.();
+  }
+  else if (e.key === "t" || e.key === "T") {
+    const r = document.documentElement;
+    const dark = r.dataset.theme ? r.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+    r.dataset.theme = dark ? "light" : "dark";
+  }
+});
+
+/* ---------- Demo ---------- */
+let demoLoaded = false;
+function loadDemo() {
+  if (demoLoaded || !DEMO_URL) return;
+  demoLoaded = true;
+  const frame = document.getElementById("demo-frame");
+  frame.innerHTML = "";
+  const iframe = document.createElement("iframe");
+  iframe.src = DEMO_URL;
+  iframe.title = "Midday surplus calculator";
+  frame.appendChild(iframe);
+  const link = document.getElementById("demo-link");
+  link.href = DEMO_URL;
+  link.hidden = false;
+}
+
+/* ---------- Start ---------- */
+render();
+const fromHash = parseInt((location.hash.match(/slide-(\d+)/) || [])[1], 10);
+setSlide(Number.isFinite(fromHash) ? fromHash - 1 : 0);
+</script>
+</body>
+</html>
