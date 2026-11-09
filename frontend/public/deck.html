@@ -98,7 +98,7 @@
   .authors {
     position: absolute;
     left: 112px;
-    bottom: 186px;
+    bottom: 226px;
     display: flex;
     gap: 48px;
     font-size: 26px;
@@ -107,10 +107,18 @@
   .event {
     position: absolute;
     left: 112px;
-    bottom: 144px;
+    bottom: 184px;
     font-size: 20px;
     color: var(--muted);
   }
+  .contact {
+    position: absolute;
+    left: 112px;
+    bottom: 140px;
+    font-size: 20px;
+    color: var(--muted);
+  }
+  .contact a { color: var(--ink); font-weight: 600; text-decoration-color: var(--sun); text-decoration-thickness: 2px; text-underline-offset: 4px; }
 
   /* Slide 2: problem and opportunity */
   .po { display: grid; grid-template-columns: 600px 1fr; gap: 72px; height: 100%; }
@@ -218,28 +226,31 @@
     color: var(--demand);
   }
 
-  /* Simulation results */
-  .sim h2 { margin: 0; font-size: 52px; font-weight: 800; font-variation-settings: "wdth" 110; }
-  .sim .by { margin: 10px 0 0; font-size: 22px; color: var(--muted); }
-  .sim-grid { display: grid; grid-template-columns: 520px 1fr; gap: 96px; margin-top: 64px; align-items: start; }
-  .sim-hero .x { font-size: 220px; line-height: 0.85; font-weight: 850; font-variation-settings: "wdth" 116; letter-spacing: -0.03em; }
-  .sim-hero p { margin: 20px 0 0; font-size: 30px; line-height: 1.3; font-weight: 600; max-width: 480px; }
-  .sim table { width: 100%; border-collapse: collapse; font-size: 26px; }
-  .sim th { text-align: left; font-size: 18px; font-weight: 600; color: var(--muted); padding: 0 0 12px; }
-  .sim td { padding: 16px 0; border-top: 2px solid var(--rule); font-weight: 600; }
-  .sim td.num, .sim th.num { text-align: right; font-variant-numeric: tabular-nums; }
-  .sim tr.cheap td { color: var(--ink); }
-  .sim tr.cheap td:first-child { box-shadow: inset 6px 0 0 var(--sun); padding-left: 18px; }
-  .sim tr.dear td { color: var(--muted); }
-  .sim tr.dear td:first-child { padding-left: 18px; }
-  .sim-job { margin-top: 44px; padding: 28px 32px; border: 2px solid var(--rule); border-radius: 14px; }
-  .sim-job .what { font-size: 22px; color: var(--muted); }
-  .sim-job .vals { display: flex; align-items: baseline; gap: 40px; margin-top: 12px; }
-  .sim-job .v { font-size: 54px; font-weight: 800; font-variation-settings: "wdth" 110; font-variant-numeric: tabular-nums; }
-  .sim-job .v.old { color: var(--muted); }
-  .sim-job .v.old s { text-decoration-thickness: 4px; }
-  .sim-job .v small { display: block; font-size: 18px; font-weight: 600; color: var(--muted); text-decoration: none; }
-  .sim-foot { position: absolute; left: 112px; bottom: 52px; max-width: 1000px; font-size: 16px; line-height: 1.5; color: var(--muted); }
+  /* Value chain */
+  .vc-eyebrow { display: block; font-size: 18px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .vc h2 { margin: 10px 0 0; font-size: 52px; line-height: 1.05; font-weight: 800; font-variation-settings: "wdth" 110; }
+  .vc-sub { margin: 14px 0 0; font-size: 24px; color: var(--muted); max-width: 980px; }
+  .vc-grid { display: grid; grid-template-columns: 1fr 340px; gap: 56px; margin-top: 24px; align-items: end; }
+  .vc-chain { display: flex; align-items: flex-end; gap: 16px; border-bottom: 2px solid var(--rule); }
+  .vc-col { display: flex; flex-direction: column; align-items: center; width: 250px; }
+  .vc-value { font-size: 58px; line-height: 1; font-weight: 850; font-variation-settings: "wdth" 112; font-variant-numeric: tabular-nums; }
+  .vc-note { margin: 6px 0 10px; font-size: 17px; white-space: nowrap; color: var(--muted); text-align: center; min-height: 22px; }
+  .vc-bar { width: 150px; display: flex; flex-direction: column-reverse; border-radius: 8px 8px 0 0; overflow: hidden; }
+  .vc-bar span { display: block; }
+  .seg-cost { background: var(--demand); }
+  .seg-cloud { background: var(--sun-fill); box-shadow: inset 0 0 0 2px var(--sun); }
+  .seg-bot { background: var(--sun); }
+  .vc-arrow { align-self: center; font-size: 40px; color: var(--muted); padding-bottom: 60px; }
+  .vc-names { display: flex; gap: 16px; margin-top: 12px; }
+  .vc-names span { width: 250px; text-align: center; font-size: 22px; font-weight: 700; line-height: 1.2; }
+  .vc-names .gap { width: 31px; }
+  .vc-totals { border-left: 4px solid var(--sun); padding-left: 36px; padding-bottom: 96px; }
+  .vc-totals .lbl { font-size: 22px; font-weight: 600; color: var(--muted); }
+  .vc-totals .num { font-size: 80px; line-height: 0.95; font-weight: 850; font-variation-settings: "wdth" 112; letter-spacing: -0.02em; margin: 6px 0 28px; font-variant-numeric: tabular-nums; }
+  .vc-totals .num:last-child { margin-bottom: 0; }
+  .vc-legend { display: flex; gap: 32px; margin-top: 18px; font-size: 18px; color: var(--muted); }
+  .vc-legend i { display: inline-block; width: 18px; height: 18px; border-radius: 4px; margin-right: 10px; transform: translateY(3px); }
+  .vc-foot { position: absolute; left: 112px; bottom: 52px; max-width: 1000px; font-size: 16px; line-height: 1.5; color: var(--muted); }
 
   /* Closing slide */
   .close-grid { display: grid; grid-template-columns: 1fr 620px; gap: 80px; height: 100%; align-items: center; padding-bottom: 40px; }
@@ -251,11 +262,13 @@
   .mark { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; font-size: 20px; font-weight: 800; transform: translateY(4px); }
   .mark.done { background: var(--sun); color: #18203A; }
   .mark.todo { border: 3px solid var(--rule); }
-  .fact { border-left: 4px solid var(--sun); padding-left: 48px; }
-  .fact .big { font-size: 150px; line-height: 0.9; font-weight: 850; font-variation-settings: "wdth" 112; letter-spacing: -0.02em; white-space: nowrap; }
-  .fact .fact-line { margin: 12px 0 0; font-size: 44px; line-height: 1.15; font-weight: 500; color: var(--muted); }
-  .fact .fact-line.strong { color: var(--ink); font-weight: 800; font-variation-settings: "wdth" 108; }
-  .fact .fact-eq { margin: 24px 0 8px; font-size: 96px; line-height: 0.8; font-weight: 800; color: var(--sun); }
+  .close .close-grid { grid-template-columns: 1fr 700px; gap: 64px; }
+  .verify { border-left: 4px solid var(--sun); padding-left: 44px; }
+  .verify .vq-who { display: block; margin: 0 0 6px; font-size: 18px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .verify ol { margin: 0 0 28px; padding-left: 30px; }
+  .verify li { display: list-item; font-size: 23px; line-height: 1.3; font-weight: 600; padding: 5px 0 5px 6px; }
+  .verify li::marker { color: var(--sun); font-weight: 800; }
+  .verify .vq-key { margin: 4px 0 0; padding-top: 20px; border-top: 2px solid var(--rule); font-size: 27px; line-height: 1.25; font-weight: 800; font-variation-settings: "wdth" 106; }
 
   /* Chrome */
   .chrome {
@@ -304,6 +317,7 @@
       <span>Thomas Barrios</span>
     </div>
     <div class="event">SF × MIT Hack Day: Energy. Track 3, manage loads.</div>
+    <div class="contact">Contact: <a href="mailto:aleh.manchuliantsau@gmail.com">aleh.manchuliantsau@gmail.com</a></div>
   </section>
 
   <!-- 2. Problem and opportunity -->
@@ -361,7 +375,54 @@
     <nav class="steps" id="steps" aria-label="Animation steps"></nav>
   </section>
 
-  <!-- 3. Demo -->
+  <!-- 4. Value chain (illustrative) -->
+  <section class="slide vc" aria-label="Illustrative value chain">
+    <span class="vc-eyebrow">Illustrative value chain</span>
+    <h2>$1 of compute becomes $16 of agent revenue</h2>
+    <p class="vc-sub">Each layer keeps a 75% gross margin, so 80% of the gross profit lands with the bot provider, not with power or GPUs.</p>
+    <div class="vc-grid">
+      <div>
+        <div class="vc-chain" role="img" aria-label="Energy and compute operating costs $1, SpaceX Cloud $4 with $3 gross profit, bot provider $16 with $12 gross profit.">
+          <div class="vc-col">
+            <div class="vc-value">$1</div>
+            <div class="vc-note">operating cost</div>
+            <div class="vc-bar"><span class="seg-cost" style="height: 16px"></span></div>
+          </div>
+          <div class="vc-arrow" aria-hidden="true">→</div>
+          <div class="vc-col">
+            <div class="vc-value">$4</div>
+            <div class="vc-note">75% margin → $3 gross profit</div>
+            <div class="vc-bar"><span class="seg-cost" style="height: 16px"></span><span class="seg-cloud" style="height: 48px"></span></div>
+          </div>
+          <div class="vc-arrow" aria-hidden="true">→</div>
+          <div class="vc-col">
+            <div class="vc-value">$16</div>
+            <div class="vc-note">75% margin → $12 gross profit</div>
+            <div class="vc-bar"><span class="seg-cost" style="height: 16px"></span><span class="seg-cloud" style="height: 48px"></span><span class="seg-bot" style="height: 192px"></span></div>
+          </div>
+        </div>
+        <div class="vc-names" aria-hidden="true">
+          <span>Energy + compute operating costs</span><span class="gap"></span>
+          <span>SpaceX Cloud</span><span class="gap"></span>
+          <span>Bot provider</span>
+        </div>
+        <div class="vc-legend" aria-hidden="true">
+          <span><i class="seg-cost"></i>Energy + compute cost</span>
+          <span><i class="seg-cloud"></i>Cloud gross profit</span>
+          <span><i class="seg-bot"></i>Bot provider gross profit</span>
+        </div>
+      </div>
+      <div class="vc-totals">
+        <div class="lbl">Total gross profit</div>
+        <div class="num">$15</div>
+        <div class="lbl">Consolidated gross margin</div>
+        <div class="num">93.75%</div>
+      </div>
+    </div>
+    <p class="vc-foot">The $1 is total underlying cloud cost, not electricity alone. This illustration ignores additional bot delivery costs and assumes both 75% margins hold.</p>
+  </section>
+
+  <!-- 5. Demo -->
   <section class="slide" aria-label="Demo">
     <div class="demo-head">
       <h2>Midday surplus to tokens, live</h2>
@@ -374,35 +435,6 @@
         <span>Set DEMO_URL at the top of the script in this file.</span>
       </div>
     </div>
-  </section>
-
-  <!-- 5. Simulation results -->
-  <section class="slide sim" aria-label="Simulation results">
-    <h2>Same job, cheaper hour</h2>
-    <p class="by">Simulation by Thomas Barrios on CAISO prices</p>
-    <div class="sim-grid">
-      <div class="sim-hero">
-        <div class="x">4.7×</div>
-        <p>cheaper per token in the cheapest grid interval than in the priciest.</p>
-      </div>
-      <div>
-        <table>
-          <thead><tr><th>CAISO interval</th><th class="num">Grid price</th><th class="num">Per 1M tokens</th></tr></thead>
-          <tbody>
-            <tr class="dear"><td>Priciest</td><td class="num">$55.53 / MWh</td><td class="num">$1.67</td></tr>
-            <tr class="cheap"><td>Cheapest</td><td class="num">$11.73 / MWh</td><td class="num">$0.35</td></tr>
-          </tbody>
-        </table>
-        <div class="sim-job">
-          <div class="what">Example cron job: profile 150 YC companies (3M tokens)</div>
-          <div class="vals">
-            <div class="v old"><s>$5.00</s><small>priciest hour</small></div>
-            <div class="v">$1.06<small>cheapest hour</small></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <p class="sim-foot">Model: CAISO price × 0.0006 MWh per 1M tokens (placeholder) × 50× inference markup. 33 tests pass; live CAISO OASIS data reproduces both price anchors.</p>
   </section>
 
   <!-- 6. What we did -->
@@ -420,13 +452,22 @@
           <li><span class="mark todo" aria-hidden="true"></span><span>Talk to hyperscalers and AI labs.</span></li>
         </ul>
       </div>
-      <div class="fact">
-        <div class="big">76 GW</div>
-        <p class="fact-line">exists today</p>
-        <div class="fact-eq" aria-hidden="true">=</div>
-        <p class="fact-line strong">70 large nuclear reactors’ worth.</p>
-        <!-- Source (for Q&A): Duke Nicholas Institute, "Rethinking Load Growth" (Feb 2025): 76 GW of new load fits on the
-             existing US grid if it can curtail 0.25% of the year (~22 h). Reactor equivalence assumes ~1.1 GW per large reactor. -->
+      <div class="verify">
+        <h3>To verify our logic, we ask</h3>
+        <span class="vq-who">Neoclouds</span>
+        <ol>
+          <li>Would 4–8 hours of cheap power a day let you deploy GPUs profitably?</li>
+          <li>Is power or interconnection your growth limit, and would you take interruptible power to connect sooner?</li>
+          <li>What discount do customers demand for interruptible GPUs?</li>
+        </ol>
+        <span class="vq-who">Neolabs</span>
+        <ol>
+          <li>What share of your compute can wait 4–24 hours without losing value?</li>
+          <li>If delayed work cost 50–75% less, would you cut costs or run more tasks?</li>
+          <li>Would you commit volume to fixed-hour capacity, or share upside from new agent features?</li>
+        </ol>
+        <p class="vq-key">Who captures enough value from flexible compute to finance GPUs that can’t run 24/7?</p>
+        <!-- Source: Cron at Noon Customer Development Interview Guide (10 neoclouds + 10 neolabs). -->
       </div>
     </div>
   </section>
@@ -686,7 +727,7 @@ function autoplay() {
 /* ---------- Slides ---------- */
 const slides = [...document.querySelectorAll(".slide")];
 const counter = document.getElementById("counter");
-const CURVE = 2, DEMO = 3;
+const CURVE = 2, DEMO = 4;
 let current = -1;
 
 function setSlide(i) {
