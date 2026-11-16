@@ -18,6 +18,9 @@
     --sun-fill: rgba(242, 163, 0, 0.30);
     --chip-bg: #18203A;
     --chip-ink: #EDF0F5;
+    --p1: #2F6FD6; --p1-fill: rgba(47, 111, 214, 0.10);
+    --p2: #E0622A; --p2-fill: rgba(224, 98, 42, 0.10);
+    --p3: #1E9E6A; --p3-fill: rgba(30, 158, 106, 0.10);
     color-scheme: light;
   }
   @media (prefers-color-scheme: dark) {
@@ -31,6 +34,9 @@
       --sun-fill: rgba(255, 184, 28, 0.26);
       --chip-bg: #E9EDF6;
       --chip-ink: #10162B;
+      --p1: #7FA6FF; --p1-fill: rgba(127, 166, 255, 0.14);
+      --p2: #FF8A57; --p2-fill: rgba(255, 138, 87, 0.14);
+      --p3: #45CC92; --p3-fill: rgba(69, 204, 146, 0.14);
       color-scheme: dark;
     }
   }
@@ -44,6 +50,9 @@
     --sun-fill: rgba(255, 184, 28, 0.26);
     --chip-bg: #E9EDF6;
     --chip-ink: #10162B;
+    --p1: #7FA6FF; --p1-fill: rgba(127, 166, 255, 0.14);
+    --p2: #FF8A57; --p2-fill: rgba(255, 138, 87, 0.14);
+    --p3: #45CC92; --p3-fill: rgba(69, 204, 146, 0.14);
     color-scheme: dark;
   }
 
@@ -270,6 +279,34 @@
   .verify li::marker { color: var(--sun); font-weight: 800; }
   .verify .vq-key { margin: 4px 0 0; padding-top: 20px; border-top: 2px solid var(--rule); font-size: 27px; line-height: 1.25; font-weight: 800; font-variation-settings: "wdth" 106; }
 
+  /* Slide 7: three projects in one value chain */
+  .chain h2 { margin: 0; font-size: 40px; line-height: 1.08; white-space: nowrap; font-weight: 800; font-variation-settings: "wdth" 108; }
+  .chain .sub { margin: 12px 0 0; font-size: 22px; color: var(--muted); }
+  .ch { position: absolute; left: 112px; right: 112px; top: 212px; height: 580px; --cw: calc(1376px / 7); }
+  .ch-links { position: absolute; left: 0; top: 0; width: 100%; height: 84px; }
+  .ch-links polygon { fill: var(--bg); stroke: var(--rule); stroke-width: 2; }
+  .ch-row { position: absolute; left: 0; width: 100%; display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; }
+  .ch-row.labels { top: 0; height: 84px; align-items: center; font-size: 20px; line-height: 1.15; font-weight: 700; }
+  .ch-row.labels span { padding: 0 22px 0 26px; }
+  .ch-row.players { top: 96px; font-size: 16px; line-height: 1.35; color: var(--muted); }
+  .pj { position: absolute; border: 2.5px solid; border-radius: 12px; padding: 12px 22px; }
+  .pj b, .pj2-text b { display: block; font-size: 22px; font-weight: 800; }
+  .pj span, .pj2-text span { display: block; margin-top: 4px; font-size: 18px; }
+  .pj1 { left: var(--cw); top: 168px; width: calc(var(--cw) * 3 - 24px); border-color: var(--p1); background: var(--p1-fill); }
+  .pj1-link { position: absolute; left: calc(var(--cw) * 4 - 24px); top: 206px; width: calc(var(--cw) * 2 + 32px); border-top: 2.5px dashed var(--p1); }
+  .pj1-owner { position: absolute; left: calc(var(--cw) * 6 + 8px); top: 172px; width: calc(var(--cw) - 8px); height: 68px; border: 2.5px dashed var(--p1); border-radius: 12px;
+    display: grid; place-items: center; text-align: center; font-size: 18px; line-height: 1.2; }
+  .pj2-text { position: absolute; left: calc(var(--cw) + 24px); top: 310px; }
+  .pj2-box { position: absolute; left: calc(var(--cw) * 4.55); top: 310px; width: 240px; height: 80px; border: 2.5px solid var(--p2); background: var(--p2-fill); border-radius: 12px;
+    display: grid; place-content: center; text-align: center; }
+  .pj2-box b { font-size: 21px; font-weight: 800; }
+  .pj2-box span { font-size: 16px; color: var(--muted); margin-top: 2px; }
+  .pj2-arrow { position: absolute; left: calc(var(--cw) + 12px); top: 378px; width: calc(var(--cw) * 3.55 - 12px); border-top: 3px solid var(--p2); }
+  .pj2-arrow::before { content: ""; position: absolute; left: -12px; top: -9.5px; border: 8px solid transparent; border-right: 12px solid var(--p2); border-left: 0; }
+  .pj3 { left: 0; top: 458px; width: 100%; border-color: var(--p3); background: var(--p3-fill); }
+  .ch-note { position: absolute; margin: 0; font-size: 16px; color: var(--muted); }
+  .ch-note strong { color: var(--ink); font-weight: 700; }
+
   /* Chrome */
   .chrome {
     position: absolute;
@@ -470,6 +507,44 @@
       </div>
     </div>
     <div class="contact contact-close">Contact: <a href="mailto:aleh.manchuliantsau@gmail.com">aleh.manchuliantsau@gmail.com</a></div>
+  </section>
+
+  <!-- 7. Three projects in one value chain -->
+  <section class="slide chain" aria-label="Three projects in one value chain">
+    <h2>Three projects enter one value chain at three different points</h2>
+    <p class="sub">The chain from power to finished AI work, and who sits at each link today</p>
+    <div class="ch">
+      <svg class="ch-links" viewBox="0 0 1376 84" preserveAspectRatio="none" aria-hidden="true">
+        <polygon points="0.0,2 175.6,2 193.6,42 175.6,82 0.0,82"/>
+        <polygon points="199.6,2 372.1,2 390.1,42 372.1,82 199.6,82 217.6,42"/>
+        <polygon points="396.1,2 568.7,2 586.7,42 568.7,82 396.1,82 414.1,42"/>
+        <polygon points="592.7,2 765.3,2 783.3,42 765.3,82 592.7,82 610.7,42"/>
+        <polygon points="789.3,2 961.9,2 979.9,42 961.9,82 789.3,82 807.3,42"/>
+        <polygon points="985.9,2 1158.4,2 1176.4,42 1158.4,82 985.9,82 1003.9,42"/>
+        <polygon points="1182.4,2 1355.0,2 1373.0,42 1355.0,82 1182.4,82 1200.4,42"/>
+      </svg>
+      <div class="ch-row labels">
+        <span style="padding-left: 8px">Solar &amp; generation</span><span>Grid capacity</span><span>Site: box, battery</span><span>Compute (GPUs)</span>
+        <span>Models &amp; routing</span><span>Agents &amp; apps</span><span>Work owner</span>
+      </div>
+      <div class="ch-row players">
+        <span>solar farms,<br>rooftop solar</span><span>Flex Connect,<br>hourly prices</span><span>Emerald AI<br>(site software)</span><span>neoclouds,<br>on-prem GPUs</span>
+        <span>OpenRouter,<br>GreenBrain</span><span>Cursor-type<br>apps, bots</span><span>enterprises,<br>bot providers</span>
+      </div>
+
+      <div class="pj pj1"><b>1 · Flex-ready AI Box</b><span>on-prem AI site, Emerald AI software on top</span></div>
+      <div class="pj1-link" aria-hidden="true"></div>
+      <div class="pj1-owner">corporate<br>cron jobs</div>
+      <p class="ch-note" style="left: var(--cw); top: 262px"><strong>For PG&amp;E:</strong> existing capacity sold sooner through Flex Connect</p>
+
+      <div class="pj2-text"><b>2 · Cron Decision Model</b><span>decides where and when a job runs: price, privacy, policy</span></div>
+      <div class="pj2-arrow" aria-hidden="true"></div>
+      <div class="pj2-box"><b>decision layer</b><span>above compute</span></div>
+      <p class="ch-note" style="left: var(--cw); top: 404px"><strong>For PG&amp;E:</strong> movable load it can see, steered to hours and places with room</p>
+
+      <div class="pj pj3"><b>3 · Cron Distributed Network</b><span>many AI Boxes joined into one network: higher reliability, large jobs split across sites, idle capacity sold</span></div>
+      <p class="ch-note" style="left: 0; top: 552px"><strong>For PG&amp;E:</strong> load that can move between circuits when one of them is constrained</p>
+    </div>
   </section>
 
   <div class="chrome">
